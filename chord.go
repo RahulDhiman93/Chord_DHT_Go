@@ -12,6 +12,8 @@ const (
 	RING_SIZE = 1 << M
 )
 
+var NETWORK_NODES []*Node
+
 type Node struct {
 	id          int
 	ipAddress   string
@@ -75,7 +77,11 @@ func (n *Node) closestPrecedingNode(id int) *Node {
 	return n
 }
 
-func (n *Node) join(existingNode *Node) {
+func (n *Node) join() {
+	var existingNode *Node
+	if len(NETWORK_NODES) > 0 {
+		existingNode = NETWORK_NODES[0]
+	}
 	if existingNode != nil {
 		n.initFingerTable(existingNode)
 		n.updateOthers()
@@ -87,6 +93,7 @@ func (n *Node) join(existingNode *Node) {
 		n.predecessor = n
 		n.successor = n
 	}
+	NETWORK_NODES = append(NETWORK_NODES, n)
 }
 
 func (n *Node) initFingerTable(existingNode *Node) {
@@ -176,15 +183,15 @@ func (n *Node) store(key string, value string) {
 	}
 }
 
-func (n *Node) lookup(key string) string {
+func (n *Node) lookup(key string) (string, bool) {
 	keyID := hashFunction(key)
 	successor := n.findSuccessor(keyID, true)
 	if successor == nil {
-		return ""
+		return "", false
 	}
 	successor.mu.Lock()
 	defer successor.mu.Unlock()
-	return successor.keys[keyID]
+	return successor.keys[keyID], true
 }
 
 func between(id1, id2, id3 int) bool {
@@ -204,51 +211,4 @@ func (n *Node) printNodeData() {
 		fmt.Println("Node FingerTable", i, v.id)
 	}
 	fmt.Println("==============================")
-}
-
-func main() {
-	// Create initial node
-	node1 := newNode("127.0.0.1", 8000)
-	node1.join(nil) // First node in the network
-
-	// Join new nodes
-	node2 := newNode("127.0.0.1", 8001)
-	node2.join(node1)
-
-	node3 := newNode("127.0.0.1", 8002)
-	node3.join(node1)
-
-	node4 := newNode("127.0.0.1", 8003)
-	node4.join(node1)
-
-	node5 := newNode("127.0.0.1", 8004)
-	node5.join(node1)
-
-	// Run stabilization to update finger tables
-	for i := 0; i < 3; i++ {
-		node1.stabilize()
-		node2.stabilize()
-		node3.stabilize()
-		node4.stabilize()
-		node5.stabilize()
-		node1.fixFingers()
-		node2.fixFingers()
-		node3.fixFingers()
-		node4.fixFingers()
-		node5.fixFingers()
-	}
-
-	node1.printNodeData()
-	node2.printNodeData()
-	node3.printNodeData()
-	node4.printNodeData()
-	node5.printNodeData()
-
-	// Store and lookup keys
-	node1.store("cnn.com/index.html", "File Content")
-	fmt.Println(node2.lookup("cnn.com/index.html")) // Should print "File Content"
-	fmt.Println(node3.lookup("cnn.com/index.html"))
-
-	node2.store("bbc.com/index.html", "File Data")
-	fmt.Println(node1.lookup("bbc.com/index.html")) // Should print "File Data"
 }
