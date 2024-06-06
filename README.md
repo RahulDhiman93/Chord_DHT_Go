@@ -65,7 +65,7 @@ To compile and run the project, follow these steps:
 2. Run the following command to compile and start the servers:
 
 ```sh
-go run main.go
+go run .
 ```
 
 This command will start 5 HTTP servers on ports 8000, 8001, 8002, 8003, and 8004.
@@ -82,10 +82,10 @@ nodes := []int{8000, 8001, 8002, 8003, 8004}
 
 ### Starting Nodes
 
-To start the nodes, run the `main.go` file:
+To start the nodes, run
 
 ```sh
-go run main.go
+go run .
 ```
 
 This command will start all the nodes defined in the `nodes` slice. Each node will automatically join the DHT network and initialize its finger table.
