@@ -22,6 +22,7 @@ During each node joins and leaving, finger table entries are stabilized and repl
   - [Store a URL](#store-a-url)
   - [Lookup a URL](#lookup-a-url)
   - [Leave the Network](#leave-the-network)
+- [Output Screenshots](#output-screenshots)
 - [Troubleshooting](#troubleshooting)
 - [Conclusion](#conclusion)
 
@@ -115,6 +116,36 @@ To make a node leave the network, send a POST request to the node's `/leave` end
 ```sh
 curl -X POST http://127.0.0.1:8000/leave -H "Content-Type: application/json" -d '{"port":8000}'
 ```
+## Output Screenshots
+
+## Starting servers and node joins
+
+<img width="480" alt="Screenshot 2024-06-06 at 4 16 03 PM" src="https://github.com/RahulDhiman93/DS_Final_Project/assets/40857657/d5eac50d-8065-4827-b6a3-4acfb9254cef">
+
+## Finger table entries
+
+<img width="755" alt="Screenshot 2024-06-06 at 4 16 19 PM" src="https://github.com/RahulDhiman93/DS_Final_Project/assets/40857657/7d487fd4-5a4f-4088-86c8-a760077fe109">
+
+## URL store and Retrieve logs
+
+<img width="711" alt="Screenshot 2024-06-06 at 4 30 43 PM" src="https://github.com/RahulDhiman93/DS_Final_Project/assets/40857657/f7b6da34-bb0c-464e-bf70-4959db4ee633">
+
+## Node leaving
+
+<img width="871" alt="Screenshot 2024-06-06 at 4 30 32 PM" src="https://github.com/RahulDhiman93/DS_Final_Project/assets/40857657/9144210d-957c-4f25-ab12-6672c5a26ec3">
+
+## Curl Requests
+
+<img width="877" alt="Screenshot 2024-06-06 at 4 29 58 PM" src="https://github.com/RahulDhiman93/DS_Final_Project/assets/40857657/368e0478-3a21-4b24-bbcf-f146daeb78ce">
+
+## Postman calls
+
+<img width="1323" alt="Screenshot 2024-06-06 at 4 34 40 PM" src="https://github.com/RahulDhiman93/DS_Final_Project/assets/40857657/b682efd9-4939-49b6-878b-6e3e7efa214f">
+<img width="1351" alt="Screenshot 2024-06-06 at 4 34 29 PM" src="https://github.com/RahulDhiman93/DS_Final_Project/assets/40857657/8ed8c939-913a-43e8-ab49-d7d235aa451f">
+<img width="1368" alt="Screenshot 2024-06-06 at 4 34 21 PM" src="https://github.com/RahulDhiman93/DS_Final_Project/assets/40857657/e147b0b3-19f1-4431-8566-9b613d6721c9">
+
+
+
 
 ## Troubleshooting
 
