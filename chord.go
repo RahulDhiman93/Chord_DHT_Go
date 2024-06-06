@@ -52,7 +52,7 @@ func newNode(ipAddress string, port int) *Node {
 
 func (n *Node) findSuccessor(id int, shouldPrintHop bool) *Node {
 	if shouldPrintHop {
-		fmt.Print("->", n.id)
+		fmt.Println("PORT:", n.port, "ID:", n.id)
 	}
 	if n == n.successor {
 		return n
@@ -93,7 +93,62 @@ func (n *Node) join() {
 		n.predecessor = n
 		n.successor = n
 	}
+
+	fmt.Println("STABLING AND UPDATING FINGER TABLE ENTRIES\n")
 	NETWORK_NODES = append(NETWORK_NODES, n)
+	for i := 0; i < 3; i++ {
+		for _, node := range NETWORK_NODES {
+			node.stabilize()
+		}
+		for _, node := range NETWORK_NODES {
+			node.fixFingers()
+		}
+	}
+
+	if len(NETWORK_NODES) > 4 {
+		for _, node := range NETWORK_NODES {
+			node.printNodeData()
+		}
+	}
+}
+
+func (n *Node) leave() {
+	n.mu.Lock()
+	defer n.mu.Unlock()
+
+	fmt.Println()
+	fmt.Println("#############################################")
+
+	for key, value := range n.keys {
+		n.successor.keys[key] = value
+	}
+
+	if n.predecessor != nil {
+		n.predecessor.successor = n.successor
+	}
+	if n.successor != nil {
+		n.successor.predecessor = n.predecessor
+	}
+
+	for i, node := range NETWORK_NODES {
+		if node.id == n.id {
+			NETWORK_NODES = append(NETWORK_NODES[:i], NETWORK_NODES[i+1:]...)
+			break
+		}
+	}
+
+	for _, node := range NETWORK_NODES {
+		node.updateOthers()
+	}
+
+	for i := 0; i < 3; i++ {
+		for _, node := range NETWORK_NODES {
+			node.stabilize()
+		}
+		for _, node := range NETWORK_NODES {
+			node.fixFingers()
+		}
+	}
 }
 
 func (n *Node) initFingerTable(existingNode *Node) {
@@ -172,25 +227,50 @@ func (n *Node) fixFingers() {
 }
 
 func (n *Node) store(key string, value string) {
+	fmt.Println("\n==============================")
 	keyID := hashFunction(key)
-	fmt.Println("FILE KEY ID:", keyID)
-	successor := n.findSuccessor(keyID, false)
-	if successor != nil {
-		successor.mu.Lock()
-		defer successor.mu.Unlock()
-		fmt.Println("NODE ID STORING THE KEY:", successor.id)
-		successor.keys[keyID] = value
+	fmt.Println("Request to store key:", key, " with Key ID:", keyID)
+	fmt.Println("NETWORK RING ->")
+	for _, v := range NETWORK_NODES {
+		fmt.Print(v.id, " -> ")
 	}
+	fmt.Println()
+	fmt.Println("Hops ->")
+	node := n.findSuccessor(keyID, true)
+	if node != nil {
+		node.mu.Lock()
+		defer node.mu.Unlock()
+		fmt.Println("NODE ID STORING THE KEY AT", "PORT:", node.port, "ID:", node.id, "\n")
+		node.keys[keyID] = value
+		if node.successor != nil {
+			fmt.Println("REPLICATING THE DATA TO SUCCESSOR ->", "PORT:", node.successor.port, "ID:", node.successor.id)
+			node.successor.keys[keyID] = value
+		}
+		if node.predecessor != nil {
+			fmt.Println("REPLICATING THE DATA TO PREDECESSOR ->", "PORT:", node.predecessor.port, "ID:", node.predecessor.id)
+			node.predecessor.keys[keyID] = value
+		}
+	}
+	fmt.Println("==============================\n")
 }
 
 func (n *Node) lookup(key string) (string, bool) {
+	fmt.Println("\n==============================")
 	keyID := hashFunction(key)
+	fmt.Println("Request to lookup key:", key, " with Key ID:", keyID)
 	successor := n.findSuccessor(keyID, true)
 	if successor == nil {
+		fmt.Println("xxxxx ---- NOT FOUND ---- xxxxx")
 		return "", false
 	}
 	successor.mu.Lock()
 	defer successor.mu.Unlock()
+	if successor.keys[keyID] == "" {
+		fmt.Println("xxxxx ---- NOT FOUND ---- xxxxx")
+		return "", false
+	}
+	fmt.Println("NODE ID STORING THE KEY FOUND AT ", "PORT:", successor.port, "ID:", successor.id)
+	fmt.Println("==============================\n")
 	return successor.keys[keyID], true
 }
 
@@ -209,6 +289,10 @@ func (n *Node) printNodeData() {
 	fmt.Println("^^^^^^^^^^^^^^^^")
 	for i, v := range n.fingerTable {
 		fmt.Println("Node FingerTable", i, v.id)
+	}
+	fmt.Println("^^^^^^^^^^^^^^^^")
+	for i, v := range n.keys {
+		fmt.Println("Node Keys", i, v)
 	}
 	fmt.Println("==============================")
 }
