@@ -34,6 +34,10 @@ During each node joins and leaving, finger table entries are stabilized and repl
 ## Prerequisites
 
 - Go 1.21 or higher installed on your system from https://go.dev/doc/install based on your OS
+- After installing, please make sure to export the path based on your OS and source file
+  Eg:
+  export GOPATH=$HOME/go
+  export PATH=$PATH:$GOPATH/bin
 - Git installed on your system from https://git-scm.com/book/en/v2/Getting-Started-Installing-Git.
 
 ## Installation
