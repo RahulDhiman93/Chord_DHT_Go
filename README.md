@@ -90,6 +90,7 @@ go run main.go
 This command will start all the nodes defined in the `nodes` slice. Each node will automatically join the DHT network and initialize its finger table.
 
 ## Usage
+To try the API endpoints exposed, use Postman: https://www.postman.com/downloads/ or  terminal/command prompt to send curl requests
 
 ### Store a URL
 
