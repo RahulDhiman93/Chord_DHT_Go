@@ -47,7 +47,7 @@ During each node joins and leaving, finger table entries are stabilized and repl
 First, clone the project repository from GitHub.
 
 ```sh
-git clone [<repository-url>](https://github.com/RahulDhiman93/DS_Final_Project/
+git clone [https://github.com/RahulDhiman93/DS_Final_Project/]
 cd DS_Final_Project
 ```
 
