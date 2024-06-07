@@ -82,7 +82,7 @@ func (us *URLShortener) handleLookup(w http.ResponseWriter, r *http.Request) {
 
 	longURL, ok := us.getLongURL(shortKey)
 	if !ok {
-		http.NotFound(w, r)
+		http.Error(w, "Url not found", http.StatusNotFound)
 		return
 	}
 
