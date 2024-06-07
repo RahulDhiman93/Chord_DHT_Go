@@ -30,7 +30,7 @@ During each node joins and leaving, finger table entries are stabilized and repl
 
 - **Nandini**: Implemented the core DHT functionality including node joining and finger table management, and prepared a readme for the project.
 - **Rahul**: Developed the leave functionality for nodes, implemented stabilization and fixFingers algorithms, and prepared a presentation for demo.
-- **Yashashvi**: Handled the URL shortener service, HTTP API setup, and API endpoint creation, and prepared the report for the project.
+- **Yashasvi**: Handled the URL shortener service, HTTP API setup, and API endpoint creation, and prepared the report for the project.
 
 ## Prerequisites
 
